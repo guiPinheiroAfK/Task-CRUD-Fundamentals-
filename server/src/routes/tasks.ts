@@ -58,4 +58,27 @@ export function registerTaskRoutes(router: Router) {
 
     res.writeHead(204).end()
   })
+
+  // PUT /tasks/:id — update title and/or description
+  router.put('/tasks/:id', (req: ExtendedRequest, res: ServerResponse) => {
+    const { title, description } = (req.body ?? {}) as { title?: string; description?: string }
+
+    if (!title?.trim() && description === undefined) {
+      send(res, 400, { error: 'Provide at least title or description' })
+      return
+    }
+
+    const updated = db.update<Task>('tasks', req.params.id, {
+      ...(title?.trim() && { title: title.trim() }),
+      ...(description !== undefined && { description: description.trim() }),
+      updatedAt: new Date().toISOString(),
+    })
+
+    if (!updated) {
+      send(res, 404, { error: 'Task not found' })
+      return
+    }
+
+    send(res, 200, updated)
+  })
 }
