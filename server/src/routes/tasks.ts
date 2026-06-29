@@ -25,4 +25,25 @@ export function registerTaskRoutes(router: Router) {
     const tasks = db.select<Task>('tasks', search ? { title: search, description: search } : undefined)
     send(res, 200, tasks)
   })
+
+  // POST /tasks
+  router.post('/tasks', (req: ExtendedRequest, res: ServerResponse) => {
+    const { title, description } = (req.body ?? {}) as { title?: string; description?: string }
+
+    if (!title?.trim()) {
+      send(res, 400, { error: 'title is required' })
+      return
+    }
+
+    const task = db.insert<Task>('tasks', {
+      id: randomUUID(),
+      title: title.trim(),
+      description: description?.trim() ?? '',
+      completedAt: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+
+    send(res, 201, task)
+  })
 }
