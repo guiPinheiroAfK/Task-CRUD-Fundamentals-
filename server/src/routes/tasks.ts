@@ -46,4 +46,16 @@ export function registerTaskRoutes(router: Router) {
 
     send(res, 201, task)
   })
+
+  // DELETE /tasks/:id
+  router.delete('/tasks/:id', (req: ExtendedRequest, res: ServerResponse) => {
+    const deleted = db.delete('tasks', req.params.id)
+
+    if (!deleted) {
+      send(res, 404, { error: 'Task not found' })
+      return
+    }
+
+    res.writeHead(204).end()
+  })
 }
