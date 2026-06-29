@@ -81,4 +81,21 @@ export function registerTaskRoutes(router: Router) {
 
     send(res, 200, updated)
   })
+
+  // PATCH /tasks/:id/complete — toggle completed status
+  router.patch('/tasks/:id/complete', (req: ExtendedRequest, res: ServerResponse) => {
+    const existing = db.select<Task>('tasks').find((t) => t.id === req.params.id)
+
+    if (!existing) {
+      send(res, 404, { error: 'Task not found' })
+      return
+    }
+
+    const updated = db.update<Task>('tasks', req.params.id, {
+      completedAt: existing.completedAt ? null : new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+
+    send(res, 200, updated)
+  })
 }
