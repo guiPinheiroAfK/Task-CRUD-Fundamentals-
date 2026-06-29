@@ -1,0 +1,15 @@
+{
+  "name": "task-crud-server",
+  "version": "1.0.0",
+  "description": "Native Node.js HTTP server for task management",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.15.0",
+    "typescript": "^5.4.5"
+  }
+}
